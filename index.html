@@ -676,6 +676,38 @@ h1, h2, h3 { font-weight: 600; }
 .zone-card .it { font-weight: 600; }
 .stage .when, .dimtag, .flag, .pick label { font-weight: 600; }
 .player .stop, .ptime, .chapters button .d { font-weight: 600; }
+/* Larger map: full-width plate, never cropped, zone details underneath */
+#map .wrap { width: min(1440px, calc(100% - 32px)); }
+.map-grid { grid-template-columns: 1fr; gap: 18px; }
+.map-frame { min-height: 0; }
+.map-frame img { min-height: 0; height: auto; object-fit: contain; }
+.map-frame:hover img { transform: none; }
+.hot { width: 52px; height: 52px; }
+.map-tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-top: 14px; }
+.map-tools .zone-chips { margin-top: 0; }
+.zone-card { position: relative; top: auto; min-height: 0; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) auto; align-items: center; gap: 12px 32px; }
+.zone-card .zc-head { display: grid; gap: 8px; }
+.zone-card h3 { max-width: none; font-size: clamp(1.7rem, 2.6vw, 2.4rem); }
+.zone-card p { font-size: 15px; }
+.zone-card .actions { margin-top: 0; align-self: center; }
+@media (max-width: 900px) { .zone-card { grid-template-columns: 1fr; } }
+.map-zoom { position: fixed; inset: 0; z-index: 60; background: rgba(6, 14, 13, .94); display: grid; grid-template-rows: auto minmax(0, 1fr); }
+.map-zoom-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 10px; color: #f3f1ea; font-size: 13px; }
+.map-zoom-bar button { border: 1px solid rgba(243, 241, 234, .5); background: transparent; color: #f3f1ea; border-radius: 99px; padding: 8px 14px; font-weight: 600; cursor: pointer; }
+.map-zoom-scroll { overflow: auto; -webkit-overflow-scrolling: touch; display: grid; place-items: center; padding: 0 12px 16px; }
+.map-zoom-scroll img { max-width: none; width: 1418px; height: auto; border-radius: 6px; cursor: zoom-out; }
+.map-zoom.fit .map-zoom-scroll img { width: auto; max-width: 100%; max-height: calc(100vh - 80px); cursor: zoom-in; }
+
+/* Voice picker in the audio player */
+.voice-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.vgender { display: inline-flex; border: 1px solid color-mix(in srgb, var(--paper) 38%, transparent); border-radius: 99px; overflow: hidden; }
+.vgender button { border: 0; background: transparent; color: var(--paper); padding: 8px 15px; font-weight: 600; font-size: 13px; cursor: pointer; }
+.vgender button[aria-pressed="true"] { background: var(--paper); color: var(--ink); }
+.voice-sel { flex: 1 1 170px; min-width: 0; background: transparent; color: var(--paper); border: 1px solid color-mix(in srgb, var(--paper) 38%, transparent); border-radius: 99px; padding: 8px 12px; font: 500 13px var(--font-body); }
+.voice-sel option, .voice-sel optgroup { color: #111; background: #fff; }
+.vtry { border: 1px solid color-mix(in srgb, var(--paper) 38%, transparent); background: transparent; color: var(--paper); border-radius: 99px; padding: 8px 14px; font-weight: 600; font-size: 13px; cursor: pointer; }
+.vtry:hover { background: color-mix(in srgb, var(--paper) 14%, transparent); }
+.voice-note { font-size: 12.5px; color: color-mix(in srgb, var(--paper) 68%, transparent); }
 </style>
 </head>
 <body>
@@ -765,7 +797,10 @@ h1, h2, h3 { font-weight: 600; }
           </picture>
           <div class="map-fallback" aria-hidden="true"><span>Forte Marghera</span><small>Site plan unavailable</small></div>
         </div>
-        <div class="zone-chips" id="zoneChips"></div>
+        <div class="map-tools">
+          <div class="zone-chips" id="zoneChips"></div>
+          <button class="btn small" type="button" id="mapEnlarge">View full size</button>
+        </div>
         <p class="scale-note">North is up · the fort is roughly 900 m across · Canal Salso runs along the south side</p>
       </div>
       <aside class="zone-card" id="zoneCard" aria-live="polite"></aside>
@@ -802,6 +837,15 @@ h1, h2, h3 { font-weight: 600; }
           <div class="segs" id="pSegs"></div>
           <div class="ptime" style="margin-top:8px"><span id="pPos">Sentence 1</span><span id="pDur"></span></div>
         </div>
+        <div class="voice-row">
+          <div class="vgender" role="group" aria-label="Voice type">
+            <button type="button" id="vFemale" aria-pressed="true">Female</button>
+            <button type="button" id="vMale" aria-pressed="false">Male</button>
+          </div>
+          <select class="voice-sel" id="pVoice" aria-label="Guide voice"><option>Loading voices…</option></select>
+          <button type="button" class="vtry" id="vTry">Hear it</button>
+        </div>
+        <div class="voice-note" id="voiceNote" hidden></div>
         <div class="tts-warn" id="ttsWarn" hidden>This browser can't read aloud. Use the transcript to read along.</div>
         <ol class="chapters" id="chapters"></ol>
       </div>
@@ -809,7 +853,7 @@ h1, h2, h3 { font-weight: 600; }
         <div class="eyebrow">Transcript · tap a sentence to play from there</div>
         <h3 id="txTitle"></h3>
         <div class="tx" id="tx"></div>
-        <p class="tx-note">Pilot script. Guides and historians will review dates and details before the public launch. The voice is generated by your device.</p>
+        <p class="tx-note">Pilot script. Guides and historians will review dates and details before the public launch. The voice is generated by your device: pick a female or male guide above.</p>
       </article>
     </div>
   </div>
@@ -1010,9 +1054,11 @@ h1, h2, h3 { font-weight: 600; }
     chips.querySelectorAll(".chip").forEach(h => h.setAttribute("aria-pressed", String(h.dataset.z === id)));
     const card = $("#zoneCard");
     card.innerHTML = `
-      <span class="badge" style="--c:${dimColor(z.dim)}"><span class="dot" style="width:8px;height:8px;border-radius:50%;background:${dimColor(z.dim)}"></span>${DIMS[z.dim].name}</span>
-      <h3>${esc(z.name)}</h3>
-      <div class="it">${esc(z.it)}</div>
+      <div class="zc-head">
+        <span class="badge" style="--c:${dimColor(z.dim)}"><span class="dot" style="width:8px;height:8px;border-radius:50%;background:${dimColor(z.dim)}"></span>${DIMS[z.dim].name}</span>
+        <h3>${esc(z.name)}</h3>
+        <div class="it">${esc(z.it)}</div>
+      </div>
       <p>${esc(z.text)}</p>
       <div class="actions"></div>`;
     const act = card.querySelector(".actions");
@@ -1021,6 +1067,21 @@ h1, h2, h3 { font-weight: 600; }
       b.addEventListener("click", fn); act.appendChild(b);
     });
   }
+  /* Full-size map viewer: opens at native resolution so phones can pan; tap the image to fit the screen */
+  function openMapZoom() {
+    const ov = el("div", { class: "map-zoom", role: "dialog", "aria-modal": "true", "aria-label": "Forte Marghera map, full size" });
+    ov.innerHTML = `<div class="map-zoom-bar"><span>Drag to move · tap the map to fit or zoom</span><button type="button">Close</button></div>
+      <div class="map-zoom-scroll"><img src="${mapImage.getAttribute("src")}" alt="${esc(mapImage.alt)}" width="1418" height="1109"></div>`;
+    if (window.innerWidth >= 900) ov.classList.add("fit");
+    const close = () => { ov.remove(); document.removeEventListener("keydown", onKey); $("#mapEnlarge").focus(); };
+    const onKey = e => { if (e.key === "Escape") close(); };
+    ov.querySelector("button").addEventListener("click", close);
+    ov.querySelector("img").addEventListener("click", () => ov.classList.toggle("fit"));
+    document.addEventListener("keydown", onKey);
+    document.body.appendChild(ov);
+    ov.querySelector("button").focus();
+  }
+  $("#mapEnlarge").addEventListener("click", openMapZoom);
   function scrollTo(sel) { const t = $(sel); if (t) t.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); }
 
   /* ---------- Audio guide ---------- */
@@ -1042,16 +1103,78 @@ h1, h2, h3 { font-weight: 600; }
   const splitSentences = t => t.match(/[^.!?]+[.!?]+/g).map(s => s.trim());
   CHAPTERS.forEach(c => { c.sentences = splitSentences(c.text); c.words = c.text.split(/\s+/).length; });
   const fmtMin = words => { const s = Math.round(words / 150 * 60); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; };
-  const A = { ch: 0, idx: 0, playing: false, rate: 1, gen: 0, voice: null };
+  const A = { ch: 0, idx: 0, playing: false, rate: 1, gen: 0, voice: null, gender: store.get("fp-voice-gender", "f"), voiceName: store.get("fp-voice-name", "") };
 
-  function pickVoice() {
+  /* Voices: sort the device's English voices into female / male, natural-sounding ones first */
+  const FEMALE_RX = /\b(aria|jenny|sonia|libby|emma|ava|michelle|natasha|clara|zira|hazel|susan|samantha|karen|moira|tessa|serena|kate|fiona|victoria|martha|ana|jessa|ashley|cora|elizabeth|amber|maisie|molly|nancy|sara|joanna|salli|kimberly|ivy|kendra|olivia|amy|allison|catherine|heera|neerja|isla|ellie|hollie|abbi|bella|mia|female|woman)\b/i;
+  const MALE_RX = /\b(guy|ryan|davis|andrew|brian|christopher|eric|thomas|mark|david|george|daniel|arthur|alex|fred|oliver|rishi|roger|steffan|tony|jason|ethan|liam|william|james|matthew|joey|justin|kevin|russell|ravi|prabhat|aaron|nathan|evan|noah|elliot|alfie|bertie|harry|tom|ralph|reed|rocko|eddy|male|man)\b/i;
+  const REGION = { GB: "UK", US: "US", AU: "Australia", IE: "Ireland", IN: "India", CA: "Canada", NZ: "New Zealand", ZA: "South Africa", SG: "Singapore", PH: "Philippines" };
+  const genderOf = v => /google us english$/i.test(v.name) || FEMALE_RX.test(v.name) ? "f" : MALE_RX.test(v.name) ? "m" : "o";
+  const isNatural = v => /natural|neural|online|premium|enhanced|google/i.test(v.name);
+  const voiceScore = v => (isNatural(v) ? 10 : 0) + (/natural|neural/i.test(v.name) ? 3 : 0) + (/^en[-_](GB|US)/i.test(v.lang) ? 2 : 1);
+  const voiceLabel = v => {
+    const name = v.name.replace(/^(Microsoft|Google|Apple)\s+/i, "").replace(/\s*\(.*?\)/g, "").replace(/\s+-\s+.*$/, "").replace(/\bOnline\b/i, "").replace(/\s{2,}/g, " ").trim();
+    const reg = REGION[(v.lang.split(/[-_]/)[1] || "").toUpperCase()];
+    return `${name}${reg && !name.includes(reg) ? " · " + reg : ""}${/natural|neural/i.test(v.name) ? " · natural" : ""}`;
+  };
+  let VOICES = [];
+  const voiceSel = $("#pVoice");
+  function loadVoices() {
     if (!synth) return;
-    const vs = synth.getVoices(); if (!vs.length) return;
-    const score = v => (v.lang === "en-GB" ? 4 : v.lang.startsWith("en-GB") ? 4 : v.lang.startsWith("en-US") ? 2 : v.lang.startsWith("en") ? 1 : 0) + (/natural|neural|google|online/i.test(v.name) ? 2 : 0);
-    A.voice = vs.filter(v => v.lang && v.lang.startsWith("en")).sort((a, b) => score(b) - score(a))[0] || null;
+    const vs = synth.getVoices().filter(v => /^en/i.test(v.lang || ""));
+    if (!vs.length) return;
+    VOICES = vs.map(v => ({ v, g: genderOf(v), s: voiceScore(v) })).sort((a, b) => b.s - a.s);
+    renderVoices();
   }
-  if (synth) { pickVoice(); synth.addEventListener && synth.addEventListener("voiceschanged", pickVoice); }
-  else { $("#ttsWarn").hidden = false; }
+  function renderVoices() {
+    $("#vFemale").setAttribute("aria-pressed", String(A.gender === "f"));
+    $("#vMale").setAttribute("aria-pressed", String(A.gender === "m"));
+    if (!VOICES.length) return;
+    const mine = VOICES.filter(x => x.g === A.gender), other = VOICES.filter(x => x.g === "o");
+    const opt = x => `<option value="${esc(x.v.name)}">${esc(voiceLabel(x.v))}</option>`;
+    voiceSel.innerHTML = (mine.length ? `<optgroup label="${A.gender === "f" ? "Female voices" : "Male voices"}">${mine.map(opt).join("")}</optgroup>` : "") +
+      (other.length ? `<optgroup label="Other voices">${other.map(opt).join("")}</optgroup>` : "");
+    const pool = mine.length ? mine : other.length ? other : VOICES;
+    const chosen = pool.find(x => x.v.name === A.voiceName) || VOICES.find(x => x.v.name === A.voiceName && (x.g === A.gender || x.g === "o")) || pool[0];
+    A.voice = chosen.v; voiceSel.value = chosen.v.name;
+    const note = $("#voiceNote");
+    if (!mine.length) { note.hidden = false; note.textContent = `This device has no ${A.gender === "f" ? "female" : "male"} English voice, so the guide uses another one. Edge and Chrome offer more natural voices.`; }
+    else if (!isNatural(A.voice)) { note.hidden = false; note.textContent = "Voice quality depends on your device. Microsoft Edge and Chrome offer the most natural voices."; }
+    else note.hidden = true;
+  }
+  function useVoice(name, preview) {
+    const x = VOICES.find(q => q.v.name === name); if (!x) return;
+    A.voice = x.v; A.voiceName = x.v.name; store.set("fp-voice-name", A.voiceName);
+    if (A.playing) speakFrom(A.idx); else if (preview) sayHello();
+  }
+  function setGender(g) {
+    A.gender = g; A.voiceName = ""; store.set("fp-voice-gender", g); store.set("fp-voice-name", "");
+    renderVoices(); if (A.voice) useVoice(A.voice.name, true);
+  }
+  function applyVoice(u) {
+    if (A.voice) { u.voice = A.voice; u.lang = A.voice.lang; } else u.lang = "en-GB";
+    // A touch slower and brighter than the default reads as warmer and friendlier
+    u.rate = A.rate * 0.95;
+    u.pitch = A.gender === "f" ? 1.08 : 1.02;
+  }
+  function sayHello() {
+    if (!synth || !A.voice) return;
+    stopSpeech(); renderPlayer();
+    const first = voiceLabel(A.voice).split(" · ")[0].replace(/\b(UK|US) English\b/i, "").replace(/\b(Female|Male)\b/i, "").trim();
+    const u = new SpeechSynthesisUtterance(`Hi${first && first.length < 14 ? ", I'm " + first : " there"}! I'll be your guide around Forte Marghera today.`);
+    applyVoice(u); synth.speak(u);
+  }
+  if (synth) {
+    loadVoices();
+    synth.addEventListener && synth.addEventListener("voiceschanged", loadVoices);
+    voiceSel.addEventListener("change", e => useVoice(e.target.value, true));
+    $("#vFemale").addEventListener("click", () => setGender("f"));
+    $("#vMale").addEventListener("click", () => setGender("m"));
+    $("#vTry").addEventListener("click", sayHello);
+  } else {
+    $("#ttsWarn").hidden = false;
+    document.querySelector(".voice-row").hidden = true;
+  }
 
   const chList = $("#chapters");
   CHAPTERS.forEach((c, i) => {
@@ -1099,8 +1222,7 @@ h1, h2, h3 { font-weight: 600; }
         return;
       }
       const u = new SpeechSynthesisUtterance(c.sentences[A.idx]);
-      if (A.voice) { u.voice = A.voice; u.lang = A.voice.lang; } else u.lang = "en-GB";
-      u.rate = A.rate;
+      applyVoice(u);
       u.onend = () => { if (g !== A.gen) return; A.idx++; renderPlayer(); next(); };
       u.onerror = e => { if (g !== A.gen || e.error === "interrupted" || e.error === "canceled") return; A.playing = false; renderPlayer(); $("#ttsWarn").hidden = false; };
       renderPlayer(); synth.speak(u);
