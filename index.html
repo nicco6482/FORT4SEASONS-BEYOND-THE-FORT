@@ -1,0 +1,907 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FortePass · Forte Marghera</title>
+<meta name="description" content="FORT4SEASONS – Beyond the Fort. Map, audio guide, bookings and cat-nursery donations for Forte Marghera, Mestre (Venice).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..700&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a survey "plate" per section — reading column for the intro, wide plates for map, guide and bookings; sticky top nav */
+:root {
+  --paper: #eef1eb;
+  --paper-2: #e2e7df;
+  --card: #fafbf8;
+  --ink: #132523;
+  --ink-2: #4b5d58;
+  --line: #c6cec3;
+  --lagoon: #1d5c56;
+  --lagoon-soft: #d3e3dc;
+  --on-lagoon: #ffffff;
+  --brick: #9c4529;
+  --discover: #2f5a73;
+  --taste: #a65f3a;
+  --live: #7a5683;
+  --green: #44744f;
+  --care: #a0605b;
+  --ok: #2f7a4a;
+  --font-display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --font-body: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  --radius: 6px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0e1716; --paper-2: #15211f; --card: #13201e; --ink: #e4ebe5; --ink-2: #9db0a9; --line: #2a3b37;
+    --lagoon: #6bb8ab; --lagoon-soft: #1b3330; --on-lagoon: #0b1514; --brick: #d98a6c;
+    --discover: #84b4d0; --taste: #dc9a72; --live: #bf9bc9; --green: #8cc39a; --care: #d79a94; --ok: #7fcf9b;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0e1716; --paper-2: #15211f; --card: #13201e; --ink: #e4ebe5; --ink-2: #9db0a9; --line: #2a3b37;
+  --lagoon: #6bb8ab; --lagoon-soft: #1b3330; --on-lagoon: #0b1514; --brick: #d98a6c;
+  --discover: #84b4d0; --taste: #dc9a72; --live: #bf9bc9; --green: #8cc39a; --care: #d79a94; --ok: #7fcf9b;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 400 16px/1.6 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+[hidden] { display: none !important; }
+a { color: var(--lagoon); }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--lagoon); outline-offset: 2px; }
+
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; }
+.eyebrow { font: 500 12px/1.3 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 500; text-wrap: balance; margin: 0; line-height: 1.05; }
+h2 { font-size: clamp(2rem, 4.2vw, 3.1rem); }
+h3 { font-size: 1.35rem; line-height: 1.2; }
+p { margin: 0; }
+.lead { font-size: 1.15rem; color: var(--ink-2); max-width: 60ch; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* Notice + nav */
+.notice { background: var(--ink); color: var(--paper); font-size: 13px; }
+.notice .wrap { padding-block: 8px; }
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.nav .wrap { display: flex; align-items: center; gap: 24px; padding-block: 12px; }
+.brand { display: flex; align-items: baseline; gap: 8px; text-decoration: none; color: var(--ink); white-space: nowrap; }
+.brand b { font: 600 1.35rem/1 var(--font-display); }
+.brand span { font: 500 11px/1 var(--font-mono); letter-spacing: .1em; color: var(--ink-2); text-transform: uppercase; }
+.nav-links { display: flex; gap: 4px; overflow-x: auto; margin-left: auto; scrollbar-width: none; }
+.nav-links a { text-decoration: none; color: var(--ink-2); font-size: 14px; font-weight: 500; padding: 6px 10px; border-radius: 99px; white-space: nowrap; }
+.nav-links a:hover { color: var(--ink); background: var(--paper-2); }
+.nav-links a.cta { background: var(--lagoon); color: var(--on-lagoon); }
+@media (max-width: 640px) { .brand span { display: none; } .nav .wrap { gap: 12px; } }
+
+section { padding-block: 72px; border-bottom: 1px solid var(--line); }
+.sec-head { display: grid; gap: 14px; margin-bottom: 36px; max-width: 760px; }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--ink); background: transparent; color: var(--ink); padding: 11px 18px; border-radius: 99px; font-weight: 600; font-size: 15px; cursor: pointer; text-decoration: none; transition: background .15s, color .15s; }
+.btn:hover { background: var(--ink); color: var(--paper); }
+.btn.primary { background: var(--lagoon); border-color: var(--lagoon); color: var(--on-lagoon); }
+.btn.primary:hover { filter: brightness(1.08); background: var(--lagoon); color: var(--on-lagoon); }
+.btn.small { padding: 7px 13px; font-size: 14px; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+
+/* Hero */
+.hero { padding-block: 64px 72px; }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 48px; align-items: center; }
+.hero h1 { font-size: clamp(3.2rem, 8vw, 6.4rem); font-weight: 500; letter-spacing: -.01em; margin-block: 14px 22px; }
+.hero h1 em { font-style: italic; color: var(--lagoon); }
+.hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 30px; padding-top: 18px; border-top: 1px solid var(--line); font: 13px/1.4 var(--font-mono); color: var(--ink-2); }
+.plate { position: relative; }
+.plate svg { width: 100%; height: auto; display: block; }
+.plate figcaption { font: 12px/1.4 var(--font-mono); color: var(--ink-2); text-align: center; margin-top: 8px; letter-spacing: .04em; }
+@media (max-width: 860px) { .hero .wrap { grid-template-columns: 1fr; } .plate { max-width: 420px; margin: 0 auto; } }
+
+/* Dimensions */
+.dims { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--ink); }
+.dim { padding: 22px 18px 24px 0; display: grid; gap: 10px; align-content: start; }
+.dim + .dim { padding-left: 18px; border-left: 1px solid var(--line); }
+.stamp { width: 46px; height: 46px; border-radius: 50%; border: 2px solid currentColor; display: grid; place-items: center; font: 600 1.15rem/1 var(--font-display); position: relative; }
+.stamp::after { content: ""; position: absolute; inset: 3px; border-radius: 50%; border: 1px dashed currentColor; opacity: .55; }
+.dim h3 { font-size: 1.5rem; letter-spacing: .04em; }
+.dim .tag { font-size: 14px; font-weight: 600; }
+.dim p { font-size: 14.5px; color: var(--ink-2); }
+@media (max-width: 960px) { .dims { grid-template-columns: repeat(2, minmax(0, 1fr)); } .dim, .dim + .dim { padding: 20px 16px 20px 0; border-left: 0; border-bottom: 1px solid var(--line); } .dim:nth-child(even) { padding-left: 16px; border-left: 1px solid var(--line); } }
+@media (max-width: 520px) { .dims { grid-template-columns: 1fr; } .dim:nth-child(even) { padding-left: 0; border-left: 0; } }
+
+.two-col { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; margin-top: 56px; }
+@media (max-width: 860px) { .two-col { grid-template-columns: 1fr; gap: 40px; } }
+.steps { list-style: none; padding: 0; margin: 18px 0 0; display: grid; gap: 16px; counter-reset: s; }
+.steps li { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 12px; counter-increment: s; }
+.steps li::before { content: counter(s); font: italic 500 1.8rem/1 var(--font-display); color: var(--lagoon); }
+.steps b { display: block; }
+.steps span { color: var(--ink-2); font-size: 15px; }
+.roadmap { margin-top: 18px; display: grid; gap: 0; }
+.stage { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 16px; padding-block: 12px; border-top: 1px solid var(--line); }
+.stage:last-child { border-bottom: 1px solid var(--line); }
+.stage .when { font: 500 13px/1.5 var(--font-mono); color: var(--lagoon); }
+.stage b { display: block; }
+.stage span { color: var(--ink-2); font-size: 15px; }
+.keystone { margin-top: 28px; padding: 18px 20px; background: var(--paper-2); border-radius: var(--radius); font-size: 15px; color: var(--ink-2); }
+.keystone b { color: var(--ink); }
+
+/* Map */
+.map-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+@media (max-width: 960px) { .map-grid { grid-template-columns: 1fr; } }
+.map-frame { position: relative; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); background: #233; }
+.map-frame img { width: 100%; height: auto; }
+.hot { position: absolute; transform: translate(-50%, -50%); width: 44px; height: 44px; border-radius: 50%; border: 0; background: transparent; cursor: pointer; padding: 0; }
+.hot::before { content: ""; position: absolute; inset: 12px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 2px rgba(0,0,0,.35); }
+.hot.on::before { background: #fff; }
+.hot.on::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid #fff; animation: ping 1.6s ease-out infinite; }
+@keyframes ping { from { transform: scale(.5); opacity: 1; } to { transform: scale(1.5); opacity: 0; } }
+.zone-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.chip { border: 1px solid var(--line); background: var(--card); color: var(--ink); padding: 6px 12px; border-radius: 99px; font-size: 14px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.chip .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--c, var(--ink-2)); }
+.chip[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+.zone-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; display: grid; gap: 14px; position: sticky; top: 84px; }
+.zone-card .it { font-style: italic; color: var(--ink-2); font-family: var(--font-display); font-size: 1.05rem; }
+.zone-card h3 { font-size: 1.8rem; }
+.zone-card .badge { display: inline-flex; align-items: center; gap: 6px; font: 500 12px/1 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--c); }
+.zone-card .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.scale-note { font: 12px/1.4 var(--font-mono); color: var(--ink-2); margin-top: 10px; }
+
+/* Audio guide */
+.guide { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 32px; align-items: start; }
+@media (max-width: 960px) { .guide { grid-template-columns: 1fr; } }
+.player { background: var(--ink); color: var(--paper); border-radius: var(--radius); padding: 26px; display: grid; gap: 18px; }
+.player .eyebrow { color: color-mix(in srgb, var(--paper) 65%, transparent); }
+.player h3 { font-size: 1.9rem; }
+.player .stop { font: 13px/1.4 var(--font-mono); color: color-mix(in srgb, var(--paper) 70%, transparent); }
+.controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.play { width: 62px; height: 62px; border-radius: 50%; border: 0; background: var(--paper); color: var(--ink); cursor: pointer; display: grid; place-items: center; }
+.play svg { width: 24px; height: 24px; }
+.ctl { width: 42px; height: 42px; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--paper) 35%, transparent); background: transparent; color: var(--paper); cursor: pointer; display: grid; place-items: center; }
+.ctl svg { width: 18px; height: 18px; }
+.ctl:disabled { opacity: .35; cursor: default; }
+.rate { margin-left: auto; background: transparent; color: var(--paper); border: 1px solid color-mix(in srgb, var(--paper) 35%, transparent); border-radius: 99px; padding: 6px 10px; font: 13px var(--font-mono); }
+.rate option { color: #000; }
+.segs { display: flex; gap: 3px; height: 6px; }
+.segs i { flex: 1; border-radius: 2px; background: color-mix(in srgb, var(--paper) 22%, transparent); }
+.segs i.done { background: var(--paper); }
+.segs i.now { background: color-mix(in srgb, var(--paper) 70%, transparent); }
+.ptime { display: flex; justify-content: space-between; font: 12px var(--font-mono); color: color-mix(in srgb, var(--paper) 65%, transparent); }
+.chapters { list-style: none; padding: 0; margin: 0; display: grid; border-top: 1px solid color-mix(in srgb, var(--paper) 20%, transparent); }
+.chapters button { width: 100%; text-align: left; background: transparent; border: 0; border-bottom: 1px solid color-mix(in srgb, var(--paper) 20%, transparent); color: var(--paper); padding: 11px 2px; cursor: pointer; display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 8px; align-items: baseline; font-size: 15px; }
+.chapters button .n { font: italic 1.1rem var(--font-display); opacity: .7; }
+.chapters button .d { font: 12px var(--font-mono); opacity: .65; }
+.chapters button[aria-current="true"] { color: var(--lagoon-soft); }
+:root[data-theme="dark"] .chapters button[aria-current="true"] { color: var(--lagoon); }
+.transcript { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px; }
+.transcript .eyebrow { margin-bottom: 10px; }
+.transcript h3 { font-size: 1.6rem; margin-bottom: 18px; }
+.tx { font-size: 17px; line-height: 1.75; max-width: 64ch; }
+.tx span { cursor: pointer; border-radius: 3px; transition: background .2s; }
+.tx span:hover { background: var(--paper-2); }
+.tx span.now { background: var(--lagoon-soft); box-shadow: 0 0 0 3px var(--lagoon-soft); }
+.tx-note { margin-top: 20px; font-size: 13px; color: var(--ink-2); }
+.tts-warn { background: color-mix(in srgb, var(--brick) 15%, transparent); color: var(--ink); border-radius: var(--radius); padding: 10px 12px; font-size: 14px; }
+
+/* Booking */
+.book-grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 28px; align-items: start; }
+@media (max-width: 1020px) { .book-grid { grid-template-columns: 1fr; } }
+.toolbar { display: grid; gap: 14px; margin-bottom: 20px; }
+.seasons { display: inline-flex; border: 1px solid var(--ink); border-radius: 99px; overflow: hidden; flex-wrap: wrap; width: fit-content; max-width: 100%; }
+.seasons button { border: 0; background: transparent; padding: 8px 16px; cursor: pointer; font-weight: 600; font-size: 14px; }
+.seasons button small { font: 11px var(--font-mono); color: var(--ink-2); margin-left: 6px; }
+.seasons button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.seasons button[aria-pressed="true"] small { color: color-mix(in srgb, var(--paper) 70%, transparent); }
+.cats { display: flex; flex-wrap: wrap; gap: 8px; }
+.offers { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.offer { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; display: grid; gap: 10px; grid-template-rows: auto auto 1fr auto auto; }
+.offer.off { opacity: .62; }
+.offer .top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.dimtag { font: 500 11px/1 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--c); display: inline-flex; align-items: center; gap: 6px; }
+.dimtag::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+.flag { font: 500 11px/1 var(--font-mono); padding: 4px 7px; border-radius: 4px; background: var(--paper-2); color: var(--ink-2); }
+.offer h4 { margin: 0; font: 600 1.08rem/1.3 var(--font-body); }
+.offer p { font-size: 14px; color: var(--ink-2); }
+.meta { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; border-top: 1px dashed var(--line); padding-top: 10px; }
+.meta .price { font: 600 1.15rem var(--font-display); }
+.meta .was { text-decoration: line-through; color: var(--ink-2); font-size: 13px; margin-right: 6px; }
+.pick { display: grid; grid-template-columns: minmax(0, 1fr) 74px; gap: 8px; }
+.pick select, .pick input, .field input, .field textarea { width: 100%; border: 1px solid var(--line); background: var(--paper); border-radius: 4px; padding: 8px 9px; font-size: 14px; }
+.pick label { font-size: 11px; font-family: var(--font-mono); color: var(--ink-2); letter-spacing: .06em; text-transform: uppercase; display: block; margin-bottom: 3px; }
+.offer .btn { justify-content: center; }
+.out-note { font-size: 13px; color: var(--ink-2); display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.linkbtn { border: 0; background: transparent; color: var(--lagoon); cursor: pointer; padding: 0; font-weight: 600; font-size: 13px; text-decoration: underline; }
+
+.cart { background: var(--card); border: 1px solid var(--ink); border-radius: var(--radius); padding: 22px; position: sticky; top: 84px; display: grid; gap: 16px; }
+.cart h3 { font-size: 1.5rem; }
+.cart-empty { font-size: 14px; color: var(--ink-2); }
+.cart-items { list-style: none; padding: 0; margin: 0; display: grid; gap: 0; }
+.cart-items li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; padding-block: 10px; border-bottom: 1px solid var(--line); font-size: 14px; }
+.cart-items .t { font-weight: 600; }
+.cart-items .s { color: var(--ink-2); font: 12px/1.4 var(--font-mono); grid-column: 1; }
+.cart-items .p { text-align: right; font-variant-numeric: tabular-nums; }
+.cart-items .x { grid-column: 2; text-align: right; }
+.cart-items .x button { border: 0; background: transparent; color: var(--ink-2); cursor: pointer; font-size: 12px; text-decoration: underline; padding: 0; }
+.roundup { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; padding: 12px; border-radius: var(--radius); background: color-mix(in srgb, var(--care) 12%, transparent); }
+.roundup input { margin-top: 3px; accent-color: var(--care); }
+.total { display: flex; justify-content: space-between; align-items: baseline; font-weight: 600; }
+.total .v { font: 600 1.7rem var(--font-display); font-variant-numeric: tabular-nums; }
+.passport { display: grid; gap: 8px; }
+.passport .row { display: flex; gap: 8px; }
+.passport .stamp { width: 40px; height: 40px; font-size: 1rem; color: var(--line); transition: color .3s, transform .3s; }
+.passport .stamp.got { color: var(--c); transform: rotate(-8deg); }
+.passport small { font-size: 13px; color: var(--ink-2); }
+
+.ticket { border: 1px dashed var(--ink); border-radius: var(--radius); padding: 18px; display: grid; gap: 12px; background: var(--paper); }
+.ticket .code { font: 600 1.3rem var(--font-mono); letter-spacing: .08em; }
+.ticket canvas { width: 132px; height: 132px; image-rendering: pixelated; background: #fff; padding: 6px; border-radius: 4px; }
+.ticket .demo { font-size: 12px; color: var(--brick); font-weight: 600; }
+
+/* Care / donations */
+.care-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+@media (max-width: 900px) { .care-grid { grid-template-columns: 1fr; } }
+.principles { list-style: none; padding: 0; margin: 24px 0 0; display: grid; }
+.principles li { padding: 14px 0; border-top: 1px solid var(--line); display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; font-size: 15px; }
+.principles li svg { width: 20px; height: 20px; color: var(--care); margin-top: 2px; }
+.principles b { display: block; }
+.principles span { color: var(--ink-2); }
+.donate { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px; display: grid; gap: 18px; }
+.donate h3 { font-size: 1.7rem; }
+.freq { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--ink); border-radius: 99px; overflow: hidden; }
+.freq button { border: 0; background: transparent; padding: 9px; font-weight: 600; cursor: pointer; }
+.freq button[aria-pressed="true"] { background: var(--care); color: var(--card); }
+.amounts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.amounts button { border: 1px solid var(--line); background: var(--paper); border-radius: var(--radius); padding: 14px 6px; font: 600 1.25rem var(--font-display); cursor: pointer; font-variant-numeric: tabular-nums; }
+.amounts button[aria-pressed="true"] { border-color: var(--care); background: color-mix(in srgb, var(--care) 16%, var(--paper)); }
+.field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+.field .hint { font-size: 12px; color: var(--ink-2); margin-top: 4px; }
+.thanks { display: grid; gap: 12px; }
+.thanks h3 { color: var(--care); }
+
+footer { padding-block: 40px 56px; font-size: 13px; color: var(--ink-2); }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 32px; justify-content: space-between; }
+footer b { font-family: var(--font-display); font-size: 1.2rem; color: var(--ink); font-weight: 600; }
+
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--paper); padding: 10px 16px; border-radius: 99px; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 40; max-width: calc(100% - 32px); }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="notice"><div class="wrap">Concept demo for the FORT4SEASONS presentation. Bookings and donations are simulated, and all activities and partnerships are still proposals.</div></div>
+
+<nav class="nav" aria-label="Main">
+  <div class="wrap">
+    <a class="brand" href="#top"><b>FortePass</b><span>Fort4Seasons</span></a>
+    <div class="nav-links">
+      <a href="#intro">The project</a>
+      <a href="#map">Map</a>
+      <a href="#guide">Audio guide</a>
+      <a href="#book">Book</a>
+      <a href="#care" class="cta">Support the cats</a>
+    </div>
+  </div>
+</nav>
+
+<main id="top">
+
+<!-- HERO / INTRO -->
+<header class="hero" id="intro">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">FORT4SEASONS · Forte Marghera · Mestre, Venice</div>
+      <h1>Beyond <em>the Fort</em></h1>
+      <p class="lead">Our proposal turns Forte Marghera into a destination for every season. History, local food, culture, nature and animal care come together in one itinerary you plan from your phone.</p>
+      <div class="hero-ctas">
+        <a class="btn primary" href="#map">Explore the map</a>
+        <a class="btn" href="#guide">Start the audio guide</a>
+      </div>
+      <div class="facts">
+        <span>Begun 1805</span><span>Star-shaped fort on the lagoon edge</span><span>One QR code · no app</span><span>English &amp; Italian</span>
+      </div>
+    </div>
+    <figure class="plate">
+      <svg id="fortPlate" viewBox="0 0 400 400" role="img" aria-label="Plan of a five-bastion star fort surrounded by its moat, with the four seasons around it"></svg>
+      <figcaption>Five dimensions · four seasons · one fort</figcaption>
+    </figure>
+  </div>
+</header>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">What the event is about</div>
+      <h2>Five ways into the fort</h2>
+      <p class="lead">Today you book each activity separately. FORT4SEASONS connects them: a visitor can join a history tour, rent a bike and finish with a tasting in a single booking, while each local partner stays independent.</p>
+    </div>
+    <div class="dims" id="dims"></div>
+
+    <div class="two-col">
+      <div>
+        <div class="eyebrow">How FortePass works</div>
+        <ol class="steps">
+          <li><div><b>Scan the QR code at the gate</b><span>FortePass is a bilingual mobile website. There's nothing to install.</span></div></li>
+          <li><div><b>Build your seasonal itinerary</b><span>Filter by season, interests and the time you have. Book tours, bikes, events and tables together.</span></div></li>
+          <li><div><b>Collect passport stamps</b><span>Cultural and environmental activities earn stamps. Stamps unlock discounts and extra content, and rewards follow participation rather than spending.</span></div></li>
+        </ol>
+        <div class="keystone"><b>Who coordinates it.</b> The proposed keystone organisation is Fondazione Forte Marghera, working with public authorities and partners, subject to agreement. Decisions on animal care stay with the animal-welfare team.</div>
+      </div>
+      <div>
+        <div class="eyebrow">Roadmap</div>
+        <div class="roadmap">
+          <div class="stage"><span class="when">Pilot · 3 months</span><div><b>Test a small offer</b><span>A few partners, one package: guided history, a circular-economy workshop and a local tasting.</span></div></div>
+          <div class="stage"><span class="when">Months 1–6</span><div><b>Birth</b><span>Partners, basic experiences and a simple digital passport.</span></div></div>
+          <div class="stage"><span class="when">Months 7–18</span><div><b>Expansion</b><span>More activities, cycling routes, school and hotel partnerships.</span></div></div>
+          <div class="stage"><span class="when">Months 19–36</span><div><b>Leadership</b><span>A stronger brand, shared standards and reporting.</span></div></div>
+          <div class="stage"><span class="when">Year 3 onwards</span><div><b>Self-renewal</b><span>Fresh content and new formats. Each step depends on evidence and resources.</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MAP -->
+<section id="map">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Site map</div>
+      <h2>Find your way around the fort</h2>
+      <p class="lead">Tap a point on the map, or pick a zone below, to see what happens there and book it.</p>
+    </div>
+    <div class="map-grid">
+      <div>
+        <div class="map-frame" id="mapFrame">
+          <img src="assets/fort-map.jpg" alt="Aerial map of Forte Marghera showing six zones: cat nursery, restaurant and wine tasting, open-air cinema and food trucks, live events, picnic area, and the military history museum with Casermetta 9." width="1418" height="1109">
+        </div>
+        <div class="zone-chips" id="zoneChips"></div>
+        <p class="scale-note">North is up · the fort is roughly 900 m across · Canal Salso runs along the south side</p>
+      </div>
+      <aside class="zone-card" id="zoneCard" aria-live="polite"></aside>
+    </div>
+  </div>
+</section>
+
+<!-- AUDIO GUIDE -->
+<section id="guide">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Discover · Audio guide</div>
+      <h2>The story of Forte Marghera</h2>
+      <p class="lead">Six short chapters, from the Austrian and French engineers of 1805 to the open park of today. Press play and walk, or read along.</p>
+    </div>
+    <div class="guide">
+      <div class="player">
+        <div>
+          <div class="eyebrow" id="pEyebrow">Chapter 1 of 6</div>
+          <h3 id="pTitle">Welcome</h3>
+          <div class="stop" id="pStop"></div>
+        </div>
+        <div class="controls">
+          <button class="ctl" id="pPrev" aria-label="Previous chapter"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
+          <button class="play" id="pPlay" aria-label="Play"><svg viewBox="0 0 24 24" fill="currentColor" id="pIcon"><path d="M7 4v16l13-8z"/></svg></button>
+          <button class="ctl" id="pNext" aria-label="Next chapter"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
+          <select class="rate" id="pRate" aria-label="Speed">
+            <option value="0.9">0.9×</option>
+            <option value="1" selected>1×</option>
+            <option value="1.15">1.15×</option>
+          </select>
+        </div>
+        <div>
+          <div class="segs" id="pSegs"></div>
+          <div class="ptime" style="margin-top:8px"><span id="pPos">Sentence 1</span><span id="pDur"></span></div>
+        </div>
+        <div class="tts-warn" id="ttsWarn" hidden>This browser can't read aloud. Use the transcript to read along.</div>
+        <ol class="chapters" id="chapters"></ol>
+      </div>
+      <article class="transcript">
+        <div class="eyebrow">Transcript · tap a sentence to play from there</div>
+        <h3 id="txTitle"></h3>
+        <div class="tx" id="tx"></div>
+        <p class="tx-note">Pilot script. Guides and historians will review dates and details before the public launch. The voice is generated by your device.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKINGS -->
+<section id="book">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Taste · Live · Green · Discover</div>
+      <h2>Book your seasonal itinerary</h2>
+      <p class="lead">Bikes, events, open-air cinema, restaurant tables and tastings in one basket. Prices shown are examples for the demo.</p>
+    </div>
+    <div class="book-grid">
+      <div>
+        <div class="toolbar">
+          <div class="seasons" id="seasons" role="group" aria-label="Season"></div>
+          <div class="cats" id="cats" role="group" aria-label="Category"></div>
+        </div>
+        <div class="offers" id="offers"></div>
+      </div>
+      <aside class="cart" id="cart" aria-live="polite">
+        <div>
+          <div class="eyebrow">Your FortePass</div>
+          <h3>Itinerary</h3>
+        </div>
+        <div id="cartBody"></div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- CARE / DONATIONS -->
+<section id="care">
+  <div class="wrap">
+    <div class="care-grid">
+      <div>
+        <div class="eyebrow" style="color:var(--care)">Care · Kitten nursery</div>
+        <h2 style="margin-block:14px 18px">Help orphaned kittens find a safe start</h2>
+        <p class="lead">We propose supporting a dedicated nursery for orphaned and vulnerable kittens at the fort, run with competent animal-welfare organisations. It does not exist yet. Before it opens, partners will check local need, premises, staff, veterinary supervision and budget.</p>
+        <ul class="principles">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12l5 5L20 6"/></svg><div><b>A separate fund</b><span>FortePass keeps donations apart from operating revenue and publishes documented transfers.</span></div></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12l5 5L20 6"/></svg><div><b>Professionals decide</b><span>The animal-welfare team decides on care, capacity and who may enter which areas.</span></div></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12l5 5L20 6"/></svg><div><b>Education, not entertainment</b><span>Workshops happen in a separate space. Visitors don't handle kittens or feed the cats.</span></div></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12l5 5L20 6"/></svg><div><b>No rankings or prizes</b><span>Donations and adoptions are never tied to leaderboards, prizes or competitions.</span></div></li>
+        </ul>
+      </div>
+      <div class="donate" id="donate">
+        <form id="donForm" novalidate>
+          <div style="display:grid;gap:18px">
+            <div>
+              <div class="eyebrow">Donate</div>
+              <h3>Support the nursery</h3>
+            </div>
+            <div class="freq" role="group" aria-label="Frequency">
+              <button type="button" id="fOnce" aria-pressed="true">One-off</button>
+              <button type="button" id="fMonth" aria-pressed="false">Monthly</button>
+            </div>
+            <div class="amounts" id="amounts" role="group" aria-label="Amount"></div>
+            <div class="field">
+              <label for="donOther">Other amount (€)</label>
+              <input id="donOther" type="number" min="1" max="5000" step="1" inputmode="numeric" placeholder="e.g. 15">
+            </div>
+            <div class="field">
+              <label for="donMsg">Message for the care team (optional)</label>
+              <textarea id="donMsg" rows="3" maxlength="280" placeholder="Good luck with the kittens!"></textarea>
+              <div class="hint">You can also add €2 to any booking at checkout.</div>
+            </div>
+            <button class="btn primary" type="submit" id="donBtn" style="justify-content:center;background:var(--care);border-color:var(--care)">Donate €10</button>
+          </div>
+        </form>
+        <div class="thanks" id="donThanks" hidden>
+          <div class="eyebrow">Thank you</div>
+          <h3 id="donThanksTitle"></h3>
+          <p>This is a demo, so no payment was taken. In the live FortePass you would continue to a secure payment page, and you'd see where the money goes in the nursery's public report.</p>
+          <button class="btn small" type="button" id="donAgain" style="width:fit-content">Make another donation</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div><b>FORT4SEASONS · Beyond the Fort</b><br>Forte Marghera, Via Forte Marghera, Mestre (Venice)</div>
+    <div style="max-width:52ch">Prototype adapted from the project's final proposal. Activities, partners, prices and the kitten nursery are proposals to be confirmed. Map imagery adapted for the presentation.</div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function () {
+  "use strict";
+  const $ = (s, r = document) => r.querySelector(s);
+  const el = (tag, attrs = {}, html) => { const e = document.createElement(tag); for (const k in attrs) { if (k === "style") e.style.cssText = attrs[k]; else e.setAttribute(k, attrs[k]); } if (html != null) e.innerHTML = html; return e; };
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  };
+  let toastT;
+  function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2200); }
+
+  /* ---------- Dimensions ---------- */
+  const DIMS = {
+    discover: { name: "Discover", tag: "Heritage and history", text: "Guided tours, storytelling and cultural challenges with guides and historians." },
+    taste:    { name: "Taste",    tag: "Local food",           text: "Seasonal tastings and local products with restaurants, cafés and producers." },
+    live:     { name: "Live",     tag: "Culture and community", text: "Concerts, exhibitions, workshops and a shared seasonal calendar." },
+    green:    { name: "Green",    tag: "Nature and mobility",   text: "Walking and cycling routes, e-bikes and circular-economy workshops." },
+    care:     { name: "Care",     tag: "Animal welfare",        text: "Welfare education and a proposed nursery for vulnerable kittens." }
+  };
+  const dimColor = d => `var(--${d})`;
+  $("#dims").innerHTML = Object.entries(DIMS).map(([k, d]) => `
+    <div class="dim" style="color:${dimColor(k)}">
+      <div class="stamp" aria-hidden="true">${d.name[0]}</div>
+      <h3>${d.name.toUpperCase()}</h3>
+      <div class="tag">${d.tag}</div>
+      <p>${d.text}</p>
+    </div>`).join("");
+
+  /* ---------- Seasons ---------- */
+  const SEASONS = {
+    spring: { label: "Spring", range: "Mar–May", months: [2, 3, 4] },
+    summer: { label: "Summer", range: "Jun–Aug", months: [5, 6, 7] },
+    autumn: { label: "Autumn", range: "Sep–Nov", months: [8, 9, 10] },
+    winter: { label: "Winter", range: "Dec–Feb", months: [11, 0, 1] }
+  };
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const currentSeason = Object.keys(SEASONS).find(k => SEASONS[k].months.includes(today.getMonth()));
+
+  /* ---------- Hero plate: star fort ---------- */
+  (function drawPlate() {
+    const svg = $("#fortPlate"), cx = 200, cy = 200;
+    const pt = (deg, r) => { const a = deg * Math.PI / 180; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; };
+    const fort = (s) => {
+      const pts = [];
+      for (let k = 0; k < 5; k++) {
+        const a = -90 + k * 72;
+        pts.push(pt(a - 26, 92 * s), pt(a - 15, 112 * s), pt(a, 150 * s), pt(a + 15, 112 * s), pt(a + 26, 92 * s));
+      }
+      return pts.map(p => p.map(n => n.toFixed(1)).join(",")).join(" ");
+    };
+    const seasonPos = { spring: [62, 58, "start"], summer: [338, 58, "end"], autumn: [338, 352, "end"], winter: [62, 352, "start"] };
+    let labels = "";
+    for (const k in seasonPos) {
+      const [x, y, anchor] = seasonPos[k]; const on = k === currentSeason;
+      labels += `<text x="${x}" y="${y}" text-anchor="${anchor}" font-family="Bodoni Moda, Georgia, serif" font-style="italic" font-size="${on ? 22 : 18}" fill="${on ? "var(--lagoon)" : "var(--ink-2)"}">${SEASONS[k].label}</text>
+                 <text x="${x}" y="${y + 16}" text-anchor="${anchor}" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="1" fill="var(--ink-2)">${SEASONS[k].range.toUpperCase()}${on ? " · NOW" : ""}</text>`;
+    }
+    const dimKeys = Object.keys(DIMS);
+    let tips = "";
+    dimKeys.forEach((d, k) => { const [x, y] = pt(-90 + k * 72, 150); tips += `<circle cx="${x}" cy="${y}" r="6" fill="${dimColor(d)}"/>`; });
+    svg.innerHTML = `
+      <polygon points="${fort(1.22)}" fill="var(--lagoon-soft)" stroke="var(--lagoon)" stroke-width="1" stroke-dasharray="3 4"/>
+      <polygon points="${fort(1)}" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.6"/>
+      <polygon points="${fort(.62)}" fill="none" stroke="var(--line)" stroke-width="1"/>
+      <line x1="200" y1="${200 - 150 * 1.32}" x2="200" y2="140" stroke="var(--ink)" stroke-width="1" stroke-dasharray="2 3"/>
+      ${tips}
+      <text x="200" y="196" text-anchor="middle" font-family="Bodoni Moda, Georgia, serif" font-size="38" font-style="italic" fill="var(--ink)">1805</text>
+      <text x="200" y="218" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9.5" letter-spacing="2" fill="var(--ink-2)">FORTE MARGHERA</text>
+      ${labels}`;
+  })();
+
+  /* ---------- Map zones ---------- */
+  const ZONES = [
+    { id: "museum", x: 57.0, y: 78.8, dim: "discover", c: "#e8ece9", name: "Military History Museum & Casermetta 9", it: "Museo storico militare e Casermetta 9",
+      text: "Start here. The museum tells the fort's story from 1805 to today, and the audio guide begins at this stop.",
+      actions: [["Play the audio guide", () => { goGuide(0, true); }], ["Book museum entry", () => goBook("tours")]] },
+    { id: "live", x: 51.5, y: 52.0, dim: "live", c: "#29c5d8", name: "Live Events", it: "Eventi live",
+      text: "Concerts, exhibitions and artistic workshops in the long barracks of the central island. Residents, schools and associations help shape the programme.",
+      actions: [["See events", () => goBook("events")]] },
+    { id: "cinema", x: 26.6, y: 43.2, dim: "live", c: "#e2c21c", name: "Open-Air Cinema & Food Trucks", it: "Cinema all'aperto e food truck (sera)",
+      text: "Summer evenings on the west lawn. Food trucks open before the screening.",
+      actions: [["Book the cinema", () => goBook("cinema", "summer")]] },
+    { id: "restaurant", x: 68.6, y: 23.0, dim: "taste", c: "#2e7fd6", name: "Restaurant & Wine Tasting", it: "Ristorazione e degustazioni",
+      text: "Seasonal menus and tastings with producers from the Venetian mainland.",
+      actions: [["Book a table or tasting", () => goBook("food")]] },
+    { id: "picnic", x: 79.2, y: 53.6, dim: "green", c: "#c43bd0", name: "Picnic Area", it: "Area picnic",
+      text: "Shaded lawns on the east island. Order a basket of local products, or bring your own and take your waste home.",
+      actions: [["Order a picnic basket", () => goBook("food")]] },
+    { id: "cats", x: 33.2, y: 19.8, dim: "care", c: "#e07a1f", name: "Cat Nursery (proposed)", it: "Nursery di gatti",
+      text: "A proposed nursery for orphaned and vulnerable kittens, run by animal-welfare professionals. Education happens in a separate space, and visitors don't enter care areas.",
+      actions: [["Support the nursery", () => scrollTo("#care")]] }
+  ];
+  let zoneSel = "museum";
+  const frame = $("#mapFrame"), chips = $("#zoneChips");
+  ZONES.forEach(z => {
+    const b = el("button", { class: "hot", style: `left:${z.x}%;top:${z.y}%`, "aria-label": z.name, "data-z": z.id });
+    b.addEventListener("click", () => selectZone(z.id));
+    frame.appendChild(b);
+    const ch = el("button", { class: "chip", type: "button", "data-z": z.id, style: `--c:${z.c}`, "aria-pressed": "false" }, `<span class="dot"></span>${esc(z.name.replace(" (proposed)", ""))}`);
+    ch.addEventListener("click", () => selectZone(z.id));
+    chips.appendChild(ch);
+  });
+  function selectZone(id) {
+    zoneSel = id;
+    const z = ZONES.find(q => q.id === id);
+    frame.querySelectorAll(".hot").forEach(h => h.classList.toggle("on", h.dataset.z === id));
+    chips.querySelectorAll(".chip").forEach(h => h.setAttribute("aria-pressed", String(h.dataset.z === id)));
+    const card = $("#zoneCard");
+    card.innerHTML = `
+      <span class="badge" style="--c:${dimColor(z.dim)}"><span class="dot" style="width:8px;height:8px;border-radius:50%;background:${dimColor(z.dim)}"></span>${DIMS[z.dim].name}</span>
+      <h3>${esc(z.name)}</h3>
+      <div class="it">${esc(z.it)}</div>
+      <p>${esc(z.text)}</p>
+      <div class="actions"></div>`;
+    const act = card.querySelector(".actions");
+    z.actions.forEach(([label, fn], i) => {
+      const b = el("button", { class: "btn small" + (i === 0 ? " primary" : ""), type: "button" }, esc(label));
+      b.addEventListener("click", fn); act.appendChild(b);
+    });
+  }
+  function scrollTo(sel) { const t = $(sel); if (t) t.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); }
+
+  /* ---------- Audio guide ---------- */
+  const CHAPTERS = [
+    { title: "Welcome to Forte Marghera", stop: "Stop 1 · Museum entrance, south island",
+      text: "Welcome to Forte Marghera. You are standing on the edge of the Venetian lagoon, between the town of Mestre and the city of Venice. The fort is shaped like a star, surrounded by moats filled with lagoon water, and the Canal Salso runs along its southern side. For about two hundred years, this place guarded the land approach to Venice. Today it is a park, a meeting place and a stage. In the next few minutes we will follow its story, from the engineers who drew its bastions to the people who opened its gates to the public." },
+    { title: "Two empires, one fort", stop: "1797 – 1814",
+      text: "In 1797 the Republic of Venice came to an end, and the city passed under Austrian rule. In 1805 Austrian engineers began building a fort here, to control the main road from the mainland to the lagoon. Only months later, after Napoleon's victories, Venice became part of the Napoleonic Kingdom of Italy. French engineers took over the works and enlarged them, adding bastions, outer defences and wider moats. When Napoleon's empire collapsed, Venice and its forts were blockaded, and in 1814 the city returned to Austria." },
+    { title: "1848: defending a republic", stop: "1848 – 1849",
+      text: "In March 1848, Venice rose against Austrian rule and proclaimed the Republic of San Marco, led by Daniele Manin. Forte Marghera became its most important outpost on the mainland. In October 1848 its defenders made a bold sortie towards Mestre. In the spring of 1849, the Austrian army laid siege to the fort and bombarded it for weeks. At the end of May the garrison withdrew across the lagoon. Venice resisted for almost three more months, weakened by hunger and cholera, and surrendered in August 1849." },
+    { title: "Barracks and powder stores", stop: "1866 – early 1900s · Central island",
+      text: "In 1866 Venice joined the Kingdom of Italy, and the Italian army took over the fort. The long brick buildings with pitched roofs that you see around you were used as barracks, stores and workshops. A casermetta, like Casermetta 9, means a small barracks. In the late nineteenth and early twentieth centuries, a ring of newer forts was built around Mestre, and Forte Marghera became part of this larger defensive system." },
+    { title: "From military zone to open fort", stop: "20th century – today",
+      text: "Through the two world wars, the fort remained a military area, closed to the public. In the late twentieth century the army gradually left, and the site passed to the city. Associations, artists and residents began to bring it back to life. Today Forte Marghera hosts exhibitions, concerts, markets and festivals, and its green islands are home to trees, birds and a colony of cats. The FORT4SEASONS project wants to build on this, so that history, food, culture and nature can be enjoyed in every season." },
+    { title: "Your route today", stop: "Around the fort",
+      text: "From here, you can continue in any direction. Follow the central avenue north to the live events area in the old barracks. On the west lawn, the open-air cinema and food trucks run on summer evenings. On the east island, the picnic area is shaded by tall trees. To the north you will find the restaurant and wine tasting, and the space proposed for the cat nursery. Remember to collect your passport stamps along the way. Thank you for listening, and enjoy Forte Marghera." }
+  ];
+  const synth = "speechSynthesis" in window ? window.speechSynthesis : null;
+  const splitSentences = t => t.match(/[^.!?]+[.!?]+/g).map(s => s.trim());
+  CHAPTERS.forEach(c => { c.sentences = splitSentences(c.text); c.words = c.text.split(/\s+/).length; });
+  const fmtMin = words => { const s = Math.round(words / 150 * 60); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; };
+  const A = { ch: 0, idx: 0, playing: false, rate: 1, gen: 0, voice: null };
+
+  function pickVoice() {
+    if (!synth) return;
+    const vs = synth.getVoices(); if (!vs.length) return;
+    const score = v => (v.lang === "en-GB" ? 4 : v.lang.startsWith("en-GB") ? 4 : v.lang.startsWith("en-US") ? 2 : v.lang.startsWith("en") ? 1 : 0) + (/natural|neural|google|online/i.test(v.name) ? 2 : 0);
+    A.voice = vs.filter(v => v.lang && v.lang.startsWith("en")).sort((a, b) => score(b) - score(a))[0] || null;
+  }
+  if (synth) { pickVoice(); synth.addEventListener && synth.addEventListener("voiceschanged", pickVoice); }
+  else { $("#ttsWarn").hidden = false; }
+
+  const chList = $("#chapters");
+  CHAPTERS.forEach((c, i) => {
+    const li = el("li");
+    const b = el("button", { type: "button", "data-i": i }, `<span class="n">${i + 1}</span><span>${esc(c.title)}</span><span class="d">${fmtMin(c.words)}</span>`);
+    b.addEventListener("click", () => { loadChapter(i); if (synth) speakFrom(0); });
+    li.appendChild(b); chList.appendChild(li);
+  });
+
+  function renderPlayer() {
+    const c = CHAPTERS[A.ch];
+    $("#pEyebrow").textContent = `Chapter ${A.ch + 1} of ${CHAPTERS.length}`;
+    $("#pTitle").textContent = c.title;
+    $("#pStop").textContent = c.stop;
+    $("#pDur").textContent = `≈ ${fmtMin(c.words)} min`;
+    $("#pPos").textContent = `Sentence ${Math.min(A.idx + 1, c.sentences.length)} of ${c.sentences.length}`;
+    $("#pSegs").innerHTML = c.sentences.map((_, i) => `<i class="${i < A.idx ? "done" : i === A.idx && A.playing ? "now" : ""}"></i>`).join("");
+    $("#pIcon").innerHTML = A.playing ? '<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>' : '<path d="M7 4v16l13-8z"/>';
+    $("#pPlay").setAttribute("aria-label", A.playing ? "Pause" : "Play");
+    $("#pPrev").disabled = A.ch === 0; $("#pNext").disabled = A.ch === CHAPTERS.length - 1;
+    chList.querySelectorAll("button").forEach(b => b.setAttribute("aria-current", String(+b.dataset.i === A.ch)));
+    $("#tx").querySelectorAll("span").forEach((s, i) => s.classList.toggle("now", A.playing && i === A.idx));
+  }
+  function loadChapter(i) {
+    stopSpeech(); A.ch = i; A.idx = 0;
+    const c = CHAPTERS[i];
+    $("#txTitle").textContent = `${i + 1}. ${c.title}`;
+    const tx = $("#tx"); tx.innerHTML = "";
+    c.sentences.forEach((s, k) => {
+      const sp = el("span", {}, esc(s)); sp.addEventListener("click", () => { if (synth) speakFrom(k); else { A.idx = k; renderPlayer(); } });
+      tx.appendChild(sp); tx.appendChild(document.createTextNode(" "));
+    });
+    renderPlayer();
+  }
+  function stopSpeech() { A.gen++; A.playing = false; if (synth) synth.cancel(); }
+  function speakFrom(i) {
+    if (!synth) return;
+    stopSpeech(); const g = A.gen; A.idx = i; A.playing = true; renderPlayer();
+    const next = () => {
+      if (g !== A.gen) return;
+      const c = CHAPTERS[A.ch];
+      if (A.idx >= c.sentences.length) {
+        if (A.ch < CHAPTERS.length - 1) { loadChapter(A.ch + 1); speakFrom(0); }
+        else { A.playing = false; A.idx = 0; renderPlayer(); }
+        return;
+      }
+      const u = new SpeechSynthesisUtterance(c.sentences[A.idx]);
+      if (A.voice) { u.voice = A.voice; u.lang = A.voice.lang; } else u.lang = "en-GB";
+      u.rate = A.rate;
+      u.onend = () => { if (g !== A.gen) return; A.idx++; renderPlayer(); next(); };
+      u.onerror = e => { if (g !== A.gen || e.error === "interrupted" || e.error === "canceled") return; A.playing = false; renderPlayer(); $("#ttsWarn").hidden = false; };
+      renderPlayer(); synth.speak(u);
+    };
+    setTimeout(next, 80);
+  }
+  $("#pPlay").addEventListener("click", () => {
+    if (!synth) { $("#ttsWarn").hidden = false; return; }
+    if (A.playing) { stopSpeech(); renderPlayer(); } else speakFrom(A.idx >= CHAPTERS[A.ch].sentences.length ? 0 : A.idx);
+  });
+  $("#pPrev").addEventListener("click", () => { const p = A.playing; loadChapter(Math.max(0, A.ch - 1)); if (p) speakFrom(0); });
+  $("#pNext").addEventListener("click", () => { const p = A.playing; loadChapter(Math.min(CHAPTERS.length - 1, A.ch + 1)); if (p) speakFrom(0); });
+  $("#pRate").addEventListener("change", e => { A.rate = +e.target.value; if (A.playing) speakFrom(A.idx); });
+  window.addEventListener("pagehide", () => { if (synth) synth.cancel(); });
+  function goGuide(i, play) { loadChapter(i); scrollTo("#guide"); if (play && synth) speakFrom(0); }
+
+  /* ---------- Bookings ---------- */
+  const ALL = ["spring", "summer", "autumn", "winter"];
+  const OFFERS = [
+    { id: "tour", cat: "tours", dim: "discover", title: "Guided history tour", desc: "Bastions, moats and barracks with a local guide. Ends at the museum.", dur: "90 min", price: 12, unit: "people", seasons: ALL, days: [0, 3, 6], times: ["10:30", "15:00"] },
+    { id: "museum", cat: "tours", dim: "discover", title: "Museum & Casermetta 9 entry", desc: "Self-guided visit with the FortePass audio guide on your phone.", dur: "Open visit", price: 6, unit: "people", seasons: ALL, days: [0, 2, 3, 4, 5, 6], times: ["10:00", "14:00"] },
+    { id: "ebike", cat: "bikes", dim: "green", title: "E-bike rental · half day", desc: "Pick up at the entrance. Helmet and lock included.", dur: "4 h", price: 25, unit: "bikes", seasons: ["spring", "summer", "autumn"], days: [0, 1, 2, 3, 4, 5, 6], times: ["09:00", "14:00"] },
+    { id: "citybike", cat: "bikes", dim: "green", title: "City bike · 2 hours", desc: "A simple bike for a loop around the moats and the park.", dur: "2 h", price: 8, unit: "bikes", seasons: ALL, days: [0, 1, 2, 3, 4, 5, 6], times: ["10:00", "12:00", "15:00"] },
+    { id: "ride", cat: "bikes", dim: "green", title: "Guided ride to the Mestre forts", desc: "Connects Forte Marghera with nearby fortifications. Runs only after safety and permission checks.", dur: "3 h", price: 18, unit: "people", seasons: ["spring", "summer", "autumn"], days: [6], times: ["09:30"], flag: "Planned" },
+    { id: "music", cat: "events", dim: "live", title: "Live music night", desc: "Concerts by local musicians in the barracks of the central island.", dur: "21:00 – 23:30", price: 15, unit: "people", seasons: ALL, days: [5, 6], times: ["21:00"] },
+    { id: "workshop", cat: "events", dim: "live", title: "Artists' workshop", desc: "Hands-on session with a local artist. Suitable from age 10.", dur: "2 h", price: 10, unit: "people", seasons: ALL, days: [0], times: ["10:30"] },
+    { id: "circular", cat: "events", dim: "green", title: "Circular-economy workshop", desc: "Repair, reuse and upcycling with materials from the fort.", dur: "90 min", price: 10, unit: "people", seasons: ALL, days: [6], times: ["15:00"] },
+    { id: "cinema", cat: "cinema", dim: "live", title: "Open-air cinema + food trucks", desc: "Films on the west lawn at dusk. Food trucks open from 19:30.", dur: "Evening", price: 8, unit: "people", seasons: ["summer"], days: [3, 4, 5, 6], times: ["21:15"] },
+    { id: "table", cat: "food", dim: "taste", title: "Restaurant table", desc: "Seasonal menu with local products. Reserve now and pay at the table.", dur: "Lunch or dinner", price: 0, unit: "guests", seasons: ALL, days: [0, 2, 3, 4, 5, 6], times: ["12:30", "13:30", "19:30", "20:30"] },
+    { id: "tasting", cat: "food", dim: "taste", title: "Seasonal wine tasting", desc: "Four wines from the Venetian mainland, presented by the producers.", dur: "75 min", price: 18, unit: "people", seasons: ALL, days: [4, 5, 6], times: ["18:00"] },
+    { id: "picnic", cat: "food", dim: "taste", title: "Picnic basket for two", desc: "Local cheese, bread, fruit and drinks. Collect at the restaurant.", dur: "From 12:00", price: 22, unit: "baskets", seasons: ["spring", "summer", "autumn"], days: [0, 1, 2, 3, 4, 5, 6], times: ["12:00", "13:00"] },
+    { id: "pkg-hbt", cat: "packages", dim: "discover", dims: ["discover", "green", "taste"], title: "History, Bike & Taste", desc: "Guided history tour, half-day e-bike and a wine tasting. One booking, three partners.", dur: "Full day", price: 49, was: 55, unit: "people", seasons: ["spring", "summer", "autumn"], days: [6], times: ["10:30"] },
+    { id: "pkg-pilot", cat: "packages", dim: "discover", dims: ["discover", "green", "taste"], title: "Pilot package", desc: "Guided history, a circular-economy workshop and a local tasting. The package for the 3-month pilot.", dur: "Half day", price: 32, was: 40, unit: "people", seasons: ALL, days: [6], times: ["10:30"], flag: "Pilot" }
+  ];
+  const CATS = [["all", "All"], ["tours", "Tours & museum"], ["bikes", "Bikes"], ["events", "Events"], ["cinema", "Cinema"], ["food", "Restaurant & tasting"], ["packages", "Packages"]];
+  const B = { season: currentSeason, cat: "all", cart: store.get("fp-cart", []), roundup: store.get("fp-roundup", false), ticket: null };
+  const euro = n => n === 0 ? "Free" : `€${n % 1 ? n.toFixed(2) : n}`;
+  const DAYN = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  function slots(o, season) {
+    const months = SEASONS[season].months, out = [];
+    const d = new Date(today); d.setDate(d.getDate() + 1);
+    for (let i = 0; i < 400 && out.length < 8; i++, d.setDate(d.getDate() + 1)) {
+      if (!months.includes(d.getMonth()) || !o.days.includes(d.getDay())) continue;
+      for (const t of o.times) { if (out.length < 8) out.push(`${DAYN[d.getDay()]} ${d.getDate()} ${MON[d.getMonth()]} ${d.getFullYear()} · ${t}`); }
+    }
+    return out;
+  }
+
+  const seasonsEl = $("#seasons");
+  ALL.forEach(k => {
+    const b = el("button", { type: "button", "data-s": k, "aria-pressed": String(k === B.season) }, `${SEASONS[k].label}<small>${SEASONS[k].range}</small>`);
+    b.addEventListener("click", () => { B.season = k; renderOffers(); });
+    seasonsEl.appendChild(b);
+  });
+  const catsEl = $("#cats");
+  CATS.forEach(([k, l]) => {
+    const b = el("button", { type: "button", class: "chip", "data-c": k, "aria-pressed": String(k === B.cat) }, esc(l));
+    b.addEventListener("click", () => { B.cat = k; renderOffers(); });
+    catsEl.appendChild(b);
+  });
+
+  function renderOffers() {
+    seasonsEl.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.s === B.season)));
+    catsEl.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.c === B.cat)));
+    const list = OFFERS.filter(o => B.cat === "all" || o.cat === B.cat)
+      .sort((a, b) => (b.seasons.includes(B.season) ? 1 : 0) - (a.seasons.includes(B.season) ? 1 : 0));
+    const wrap = $("#offers"); wrap.innerHTML = "";
+    list.forEach(o => {
+      const on = o.seasons.includes(B.season);
+      const card = el("article", { class: "offer" + (on ? "" : " off") });
+      const sid = `s-${o.id}`, qid = `q-${o.id}`;
+      const opts = on ? slots(o, B.season).map(s => `<option>${s}</option>`).join("") : "";
+      const unitLabel = o.unit === "bikes" ? "Bikes" : o.unit === "baskets" ? "Baskets" : o.unit === "guests" ? "Guests" : "People";
+      card.innerHTML = `
+        <div class="top"><span class="dimtag" style="--c:${dimColor(o.dim)}">${(o.dims || [o.dim]).map(d => DIMS[d].name).join(" · ")}</span>${o.flag ? `<span class="flag">${o.flag}</span>` : ""}</div>
+        <h4>${esc(o.title)}</h4>
+        <p>${esc(o.desc)}</p>
+        <div class="meta"><span>${esc(o.dur)}</span><span>${o.was ? `<span class="was">€${o.was}</span>` : ""}<span class="price num">${euro(o.price)}</span>${o.price ? `<small style="color:var(--ink-2)"> / ${o.unit === "people" ? "person" : o.unit.replace(/s$/, "")}</small>` : ""}</span></div>
+        ${on ? `
+        <div class="pick">
+          <div><label for="${sid}">When</label><select id="${sid}">${opts}</select></div>
+          <div><label for="${qid}">${unitLabel}</label><input id="${qid}" type="number" min="1" max="12" value="${o.unit === "guests" ? 2 : 1}" inputmode="numeric"></div>
+        </div>
+        <button class="btn small primary" type="button">Add to itinerary</button>` :
+        `<div class="out-note"><span>Available in ${o.seasons.map(s => SEASONS[s].label).join(", ")}</span><button class="linkbtn" type="button">Show ${SEASONS[o.seasons[0]].label}</button></div>`}`;
+      if (on) {
+        card.querySelector(".btn").addEventListener("click", () => {
+          const qty = Math.max(1, Math.min(12, parseInt(card.querySelector("#" + qid).value, 10) || 1));
+          const when = card.querySelector("#" + sid).value;
+          B.cart.push({ key: Date.now() + Math.random(), id: o.id, when, qty });
+          B.ticket = null; saveCart(); renderCart(); toast(`Added: ${o.title}`);
+        });
+      } else {
+        card.querySelector(".linkbtn").addEventListener("click", () => { B.season = o.seasons.includes(currentSeason) ? currentSeason : o.seasons[0]; renderOffers(); });
+      }
+      wrap.appendChild(card);
+    });
+  }
+
+  function saveCart() { store.set("fp-cart", B.cart); store.set("fp-roundup", B.roundup); }
+  function cartTotal() { return B.cart.reduce((s, it) => { const o = OFFERS.find(x => x.id === it.id); return s + (o ? o.price * it.qty : 0); }, 0) + (B.roundup && B.cart.length ? 2 : 0); }
+  function stampsEarned() {
+    const got = new Set();
+    B.cart.forEach(it => { const o = OFFERS.find(x => x.id === it.id); if (o) (o.dims || [o.dim]).forEach(d => got.add(d)); });
+    if (B.roundup && B.cart.length) got.add("care");
+    return got;
+  }
+  function renderCart() {
+    const body = $("#cartBody");
+    B.cart = B.cart.filter(it => OFFERS.some(o => o.id === it.id));
+    const got = stampsEarned();
+    const passport = `
+      <div class="passport">
+        <div class="row">${Object.keys(DIMS).map(d => `<div class="stamp ${got.has(d) ? "got" : ""}" style="--c:${dimColor(d)}" title="${DIMS[d].name}${got.has(d) ? " · collected" : ""}">${DIMS[d].name[0]}</div>`).join("")}</div>
+        <small class="num">${got.size} of 5 passport stamps${got.size === 5 ? " · full passport!" : ""}</small>
+      </div>`;
+    if (B.ticket) {
+      body.innerHTML = `
+        <div class="ticket">
+          <div class="eyebrow">Booking confirmed</div>
+          <div class="code">${B.ticket.code}</div>
+          <canvas id="qr" width="25" height="25" aria-label="Ticket code pattern"></canvas>
+          <div style="font-size:14px">${B.ticket.lines.map(esc).join("<br>")}</div>
+          <div class="total"><span>Total</span><span class="v">${euro(B.ticket.total)}</span></div>
+          <div class="demo">Demo ticket. Not valid for entry and no payment taken.</div>
+        </div>
+        ${passport}
+        <button class="btn small" type="button" id="newTrip" style="width:fit-content">Plan another visit</button>`;
+      drawCode($("#qr"), B.ticket.code);
+      $("#newTrip").addEventListener("click", () => { B.ticket = null; renderCart(); });
+      return;
+    }
+    if (!B.cart.length) {
+      body.innerHTML = `<p class="cart-empty">Nothing booked yet. Add a tour, a bike or a table. Mixing dimensions fills more of your passport.</p>${passport}`;
+      return;
+    }
+    body.innerHTML = `
+      <ul class="cart-items">${B.cart.map(it => { const o = OFFERS.find(x => x.id === it.id); return `
+        <li><span class="t">${esc(o.title)}</span><span class="p">${o.price ? euro(o.price * it.qty) : "Pay on site"}</span>
+        <span class="s">${esc(it.when)} · ×${it.qty}</span><span class="x"><button type="button" data-k="${it.key}">Remove</button></span></li>`; }).join("")}
+      </ul>
+      <label class="roundup" for="roundup"><input type="checkbox" id="roundup" ${B.roundup ? "checked" : ""}><span>Add <b>€2</b> for the proposed kitten nursery. It goes to a separate, reported fund.</span></label>
+      <div class="total"><span>Total</span><span class="v">${euro(cartTotal())}</span></div>
+      ${passport}
+      <button class="btn primary" type="button" id="confirm" style="justify-content:center">Confirm booking</button>`;
+    body.querySelectorAll(".x button").forEach(b => b.addEventListener("click", () => { B.cart = B.cart.filter(it => String(it.key) !== b.dataset.k); saveCart(); renderCart(); }));
+    $("#roundup").addEventListener("change", e => { B.roundup = e.target.checked; saveCart(); renderCart(); });
+    $("#confirm").addEventListener("click", () => {
+      const code = "FP-" + Math.random().toString(36).slice(2, 6).toUpperCase() + "-" + String(Math.floor(Math.random() * 900 + 100));
+      const lines = B.cart.map(it => { const o = OFFERS.find(x => x.id === it.id); return `${o.title} · ${it.when} · ×${it.qty}`; });
+      if (B.roundup) lines.push("Kitten nursery contribution · €2");
+      B.ticket = { code, lines, total: cartTotal() };
+      B.cart = []; saveCart(); renderCart(); toast("Booking confirmed (demo)");
+    });
+  }
+  function drawCode(cv, code) {
+    const n = 25, ctx = cv.getContext("2d");
+    ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, n, n); ctx.fillStyle = "#111";
+    let h = 2166136261; for (const ch of code) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); }
+    const rnd = () => { h ^= h << 13; h ^= h >>> 17; h ^= h << 5; return (h >>> 0) / 4294967296; };
+    const finder = (x, y) => { for (let i = 0; i < 7; i++) for (let j = 0; j < 7; j++) { const edge = i === 0 || j === 0 || i === 6 || j === 6, core = i > 1 && i < 5 && j > 1 && j < 5; if (edge || core) ctx.fillRect(x + i, y + j, 1, 1); } };
+    const inFinder = (x, y) => (x < 8 && y < 8) || (x > n - 9 && y < 8) || (x < 8 && y > n - 9);
+    for (let x = 0; x < n; x++) for (let y = 0; y < n; y++) if (!inFinder(x, y) && rnd() > .52) ctx.fillRect(x, y, 1, 1);
+    finder(0, 0); finder(n - 7, 0); finder(0, n - 7);
+  }
+  function goBook(cat, season) { B.cat = cat; if (season) B.season = season; renderOffers(); scrollTo("#book"); }
+
+  /* ---------- Donations ---------- */
+  const D = { amount: 10, monthly: false };
+  const amountsEl = $("#amounts");
+  [5, 10, 25, 50].forEach(v => {
+    const b = el("button", { type: "button", "data-v": v, "aria-pressed": String(v === D.amount) }, `€${v}`);
+    b.addEventListener("click", () => { D.amount = v; $("#donOther").value = ""; renderDon(); });
+    amountsEl.appendChild(b);
+  });
+  $("#donOther").addEventListener("input", e => { const v = parseInt(e.target.value, 10); D.amount = v > 0 ? Math.min(v, 5000) : 0; renderDon(); });
+  $("#fOnce").addEventListener("click", () => { D.monthly = false; renderDon(); });
+  $("#fMonth").addEventListener("click", () => { D.monthly = true; renderDon(); });
+  function renderDon() {
+    amountsEl.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === D.amount && !$("#donOther").value)));
+    $("#fOnce").setAttribute("aria-pressed", String(!D.monthly)); $("#fMonth").setAttribute("aria-pressed", String(D.monthly));
+    const btn = $("#donBtn"); btn.disabled = !D.amount;
+    btn.textContent = D.amount ? `Donate €${D.amount}${D.monthly ? " a month" : ""}` : "Choose an amount";
+  }
+  $("#donForm").addEventListener("submit", e => {
+    e.preventDefault(); if (!D.amount) return;
+    $("#donThanksTitle").textContent = `€${D.amount}${D.monthly ? " a month" : ""} for the kitten nursery`;
+    $("#donForm").hidden = true; $("#donThanks").hidden = false;
+  });
+  $("#donAgain").addEventListener("click", () => { $("#donThanks").hidden = true; $("#donForm").hidden = false; $("#donMsg").value = ""; });
+
+  /* ---------- Init ---------- */
+  selectZone(zoneSel);
+  loadChapter(0);
+  renderOffers();
+  renderCart();
+  renderDon();
+})();
+</script>
+</body>
+</html>
